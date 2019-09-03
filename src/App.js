@@ -6,6 +6,7 @@ import { SearchBar } from './components/SearchBar';
 import { Error } from './components/Error';
 import { Loading } from './components/Loading';
 import { MarvelService } from './services/MarvelService';
+import { LoadMore } from './components/LoadMore';
 
 class App extends Component {
   // --------------------------------------------------
@@ -22,6 +23,7 @@ class App extends Component {
 
     this.fetchCharacters = this.fetchCharacters.bind(this);
     this.fetchCharacter = this.fetchCharacter.bind(this);
+    this.fetchMoreCharacters = this.fetchMoreCharacters.bind(this);
 
     this.marvelService = new MarvelService({
       apiKey: this.props.apiKey,
@@ -32,6 +34,11 @@ class App extends Component {
   // RENDER
   // --------------------------------------------------
   render() {
+    let loadMoreElem = '';
+    if (this.state.canLoadMore) {
+      loadMoreElem = <LoadMore onClick={ this.fetchMoreCharacters } />;
+    }
+
     const resultsElem = this.state.hasError
       ? <Error />
       : this.state.isLoading
@@ -64,6 +71,7 @@ class App extends Component {
           onSubmit={ (searchTerm) => this.setState({ searchTerm }) }
         />
         { resultsElem }
+        { loadMoreElem }
         { detailsElem }
       </section>
     );
@@ -102,10 +110,36 @@ class App extends Component {
         console.log(data.data.results);
     // Update the application state using the resulting data.
     // Remove the loading state.
-        this.setState({ results: data.data.results, isLoading: false });
+        this.setState({ 
+          results: data.data.results, 
+          isLoading: false,
+          canLoadMore: data.data.total > data.data.offset + data.data.count, });
       })
     // Handle potential errors.
       .catch((err) => {
+        console.error(err);
+        this.setState({ hasError: true });
+      });
+  }
+
+  fetchMoreCharacters() {
+    console.warn('Whoops, it looks like this method hasn\'t been implemented yet');
+    // Invoke the `getCharacters()` method on the marvel service.
+    // Pass in the current `searchTerm` as `nameStartsWith`,
+    console.log('__INVOKING GET CHARACTERS ON MARVEL SERVICE WITH AN OFFSET');
+    this.marvelService.getCharacters({nameStartsWith: this.state.searchTerm, offset: this.state.results.length })
+      .then((data) => {
+        console.log('__INSIDE AppFetchMoreCharacters() LOGGING OUT DATA')
+        console.log(data.data.results);
+    // Update the application state using the resulting data.
+    // Remove the loading state.
+        this.setState({ 
+          results: [...this.state.results, ...data.data.results],
+          canLoadMore: data.data.total > data.data.offset + data.data.count, });
+      })
+    // Handle potential errors.
+      .catch((err) => {
+        console.error(err);
         this.setState({ hasError: true });
       });
   }
