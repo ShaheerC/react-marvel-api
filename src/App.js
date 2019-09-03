@@ -105,6 +105,9 @@ class App extends Component {
         this.setState({ results: data.data.results, isLoading: false });
       })
     // Handle potential errors.
+      .catch((err) => {
+        this.setState({ hasError: true });
+      });
   }
 
   fetchCharacter(id) {
