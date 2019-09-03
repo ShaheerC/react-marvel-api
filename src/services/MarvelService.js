@@ -56,8 +56,15 @@ export class MarvelService {
     console.warn('Whoops, it looks like this method hasn\'t been implemented yet.');
     // TODO:
     // - Create the `params` object.
+    const myRequestParams = { ...this.getAuthConfig(), ...config, };
     // - Extract the correct endpoint from `ENDPOINTS`; add the `id`.
+    const endpoint = MarvelService.ENDPOINTS.character + '/' + id;
     // - Dispatch a request using `axios.get()`.
+    return axios.get(endpoint, { params: myRequestParams })
+      .then((response) => {
+        console.log(response);
+        return response.data.data;
+      });
     // - Parse and return the response.
   }
 }
