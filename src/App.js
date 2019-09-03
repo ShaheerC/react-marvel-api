@@ -91,10 +91,19 @@ class App extends Component {
     console.warn('Whoops, it looks like this method hasn\'t been implemented yet');
     // TODO:
     // Put the application into a loading state.
+    console.log('__PUTTING APP IN LOADING STATE');
+    this.setState({isLoading: true});
     // Invoke the `getCharacters()` method on the marvel service.
     // Pass in the current `searchTerm` as `nameStartsWith`,
+    console.log('__INVOKING GET CHARACTERS ON MARVEL SERVICE');
+    this.marvelService.getCharacters({nameStartsWith: this.state.searchTerm, })
+      .then((data) => {
+        console.log('__INSIDE AppFetchCharacters() LOGGING OUT DATA')
+        console.log(data.data.results);
     // Update the application state using the resulting data.
     // Remove the loading state.
+        this.setState({ results: data.data.results, isLoading: false });
+      })
     // Handle potential errors.
   }
 
