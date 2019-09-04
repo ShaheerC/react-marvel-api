@@ -57,7 +57,7 @@ class App extends Component {
           <ResultsList
             results={ this.state.results }
             searchTerm={ this.state.searchTerm }
-            searchType={ this.props.searchType }
+            searchType={ this.state.searchType }
             onResultClick={ this.state.searchType === 'Characters' ? this.fetchCharacter : this.fetchComic }
           />
         );
